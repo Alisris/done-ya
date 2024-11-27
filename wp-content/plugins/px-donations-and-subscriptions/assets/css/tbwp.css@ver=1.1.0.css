@@ -1,0 +1,360 @@
+.tbwp_button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.tbwp_button--fullwidth {
+    width: 100%;
+}
+
+.tbwp_button:disabled,
+.tbwp_button[disabled] {
+    background-color: #EEE;
+    color: #999;
+}   
+
+.tbwp_link {
+    color: #444;
+    text-align: center;
+    padding: 10px;
+    display: block;
+}
+
+.tbwp_result {
+    font-size: 14px;
+    width: 50%;
+    border: 1px solid #EEE;
+    padding: 40px;
+    box-shadow: 0 0 10px #DDD;
+}
+
+.tbwp_result--rejected .alert {
+    color: #D8000C;
+    background-color: #FFD2D2;
+    border: 1px solid #D8000C;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.tbwp_result--rejected .alert .reasons {
+    list-style-type: circle;
+    margin-left: 20px;
+}
+
+.tbwp_result .title {
+    font-size: 20px;
+    padding: 10px 10px 20px 10px;
+    position: relative;
+}
+
+.tbwp_result .item {
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #EEE;
+}
+
+.tbwp_result .item_title {
+    font-weight: bold;
+    padding-right: 10px;
+}
+
+.tbwp_result .item_detail {
+    font-size: 12px;
+}
+
+.tbwp_plus {
+    border: 1px solid #DDD;
+    width: 50%;
+    padding: 20px;
+    font-size: 1.2em;
+    box-shadow: 0 0 10px #DDD;
+}
+
+.tbwp_plus__product {
+    border: 1px solid #EEE;
+    overflow: hidden;
+    padding: 10px;
+    background-color: #EEE;
+}
+
+.tbwp_plus__amount {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.tbwp_plus__product-description {
+    font-size: 1.2em;
+}
+
+.tbwp_plus__title {
+    font-weight: bold;
+    font-size: 1.5em;
+    line-height: 3em;
+}
+
+.tbwp_oneclick__periods {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.tbwp_oneclick__period {
+    flex: 1;
+    text-align: center;
+    background-color: #EEE;
+    display: block;
+    padding: 10px;
+    font-weight: bold;
+    position: relative;
+}
+
+.tbwp_oneclick__period--selected {
+    background-color: #4CAF50;
+    color: #FFF;
+}
+
+.tbwp_oneclick__period:hover {
+    cursor: pointer;
+}
+
+.tbwp_oneclick__currencies {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.tbwp_oneclick__currency {
+    flex: 1;
+    text-align: center;
+    background-color: #EEE;
+    display: block;
+    padding: 10px;
+    font-weight: bold;
+    position: relative;
+}
+
+.tbwp_oneclick__currency--selected {
+    background-color: #4CAF50;
+    color: #FFF;
+}
+
+.tbwp_oneclick__currency:hover {
+    cursor: pointer;
+}
+
+.tbwp_plus__options {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.tbwp_plus__option {
+    flex: 1;
+    text-align: center;
+    background-color: #EEE;
+    display: block;
+    padding: 10px;
+    font-weight: bold;
+    position: relative;
+}
+
+.tbwp_plus__option:not(:last-child) {
+    border-right: 1px solid #DDD;
+}
+
+.tbwp_plus__option--selected {
+    background-color: #4CAF50;
+    color: #FFF;
+}
+
+.tbwp_plus__option:hover {
+    cursor: pointer;
+}
+
+.tbwp_plus__option::after {
+    position: absolute;
+    left: calc(50% - 10px);
+    bottom: -10px;
+    content: '';
+    width: 0; 
+    height: 0; 
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #EEE;
+}
+
+.tbwp_plus__option--selected::after {
+    border-top-color: #4CAF50;
+}
+
+.tbwp_plus__field {
+    padding: 10px 0;
+}
+
+.tbwp_plus__field--left {
+    padding: 10px 0;
+    width: 48%;
+    float: left;
+}
+
+.tbwp_plus__field--right {
+    padding: 10px 0;
+    width: 50%;
+    float: right;
+}
+
+.tbwp_plus__field label {
+    display: block;
+    font-size: 1.2em;
+    line-height: 2em;
+    font-weight: bold;
+}
+
+.tbwp_plus__field label.error {
+    color: #ed4337;
+    font-weight: normal;
+}
+
+.tbwp_plus__field input {
+    display: block;
+    width: 100%;
+    font-size: 1.2em;
+    padding: 5px 10px;
+    box-shadow: inset 0 0 2px #EEE;
+    border: 1px solid #DDD;
+}
+
+.tbwp_plus__field input:disabled {
+    background-color: #EEE;
+}
+
+.tbwp_oneclick {
+    border: 1px solid #DDD;
+    width: 400px;
+    padding: 20px;
+    font-size: 1.2em;
+    box-shadow: 0 0 10px #DDD;
+}
+
+.tbwp_oneclick__step:last-child {
+    display: none;
+}
+
+.tbwp_oneclick__title {
+    font-weight: bold;
+    font-size: 1.5em;
+    line-height: 2em;
+    padding: 15px 0 0 0;
+}
+
+.tbwp_oneclick__options {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.tbwp_oneclick__option {
+    flex: 1;
+    text-align: center;
+    background-color: #EEE;
+    display: block;
+    padding: 10px;
+    font-weight: bold;
+    position: relative;
+    font-size: 1.2em;
+}
+
+.tbwp_oneclick__conversion {
+    display: inline-block;
+    font-size: 1.2rem;
+    font-weight: normal;
+}
+
+.tbwp_oneclick__option:not(:last-child) {
+    border-right: 1px solid #DDD;
+}
+
+.tbwp_oneclick__option--selected {
+    background-color: #4CAF50;
+    color: #FFF;
+}
+
+.tbwp_oneclick__option:hover {
+    cursor: pointer;
+}
+
+.tbwp_oneclick__option::after {
+    position: absolute;
+    left: calc(50% - 10px);
+    bottom: -10px;
+    content: '';
+    width: 0; 
+    height: 0; 
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #EEE;
+}
+
+.tbwp_oneclick__option--selected::after {
+    border-top-color: #4CAF50;
+}
+
+.tbwp_oneclick__other_amount {
+    display: flex;
+}
+
+.tbwp_oneclick__other_amount label {
+    padding: 0 20px;
+}
+
+.tbwp_oneclick__field {
+    padding: 10px 0;
+}
+
+.tbwp_oneclick__field label {
+    display: block;
+    font-size: 1.2em;
+    line-height: 2em;
+    font-weight: bold;
+}
+
+.tbwp_oneclick__field label.error {
+    color: #ed4337;
+    font-weight: normal;
+}
+
+.tbwp_oneclick__field input {
+    display: block;
+    width: 100%;
+    font-size: 1.2em;
+    padding: 5px 10px;
+    box-shadow: inset 0 0 2px #EEE;
+    border: 1px solid #DDD;
+}
+
+.tbwp_oneclick__field input:disabled {
+    background-color: #EEE;
+}
+
+.tbwp_oneclick__summary {
+    background-color: #EEE;
+    color: #222;
+    padding: 20px;
+}
+
+.tbwp_oneclick__summary-description {
+    font-weight: bold;
+    font-size: 1.2em;
+}

@@ -1,0 +1,267 @@
+jQuery(function($){ 
+    // Events
+    $('.tbwp_oneclick__option').on('click', function(){
+        parent = $(this).parents('.tbwp_oneclick_form');
+
+        $(parent).find('.tbwp_oneclick__option--selected').removeClass('tbwp_oneclick__option--selected');
+        $(this).addClass('tbwp_oneclick__option--selected');
+
+        if ($(this).data('amount') == 'other') {
+            $(parent).find('.oneclick_other_amount').parents('.tbwp_oneclick__field').show();
+            $(parent).find('.oneclick_other_amount').removeAttr('disabled').focus();
+            $(parent).find('.oneclick_other_amount').trigger('keyup');
+        } else {
+            $(parent).find('.oneclick_other_amount').parents('.tbwp_oneclick__field').hide();
+            $(parent).find('.oneclick_other_amount').attr('disabled', 'disabled');
+            $(parent).find('.oneclick_amount').val($(this).data('amount'));
+
+
+            if ($('.oneclick_ufvalue').length) {
+                ufvalue = $(parent).find('.oneclick_ufvalue').val();
+                amountUF = $(parent).find('.tbwp_oneclick__option--selected').data('amount-uf');
+                amountCLP = Math.round(ufvalue * amountUF);
+                $(parent).find('.oneclick_amount').val(amountCLP);
+                $(parent).find('.oneclick_amount_uf').val(amountUF);
+                $(parent).find('.oneclick_currency').val('uf');
+            }
+        }
+
+        updateSummary(parent);
+    });
+
+    $('.tbwp_oneclick__period').on('click', function(){
+        parent = $(this).parents('.tbwp_oneclick_form');
+        $(parent).find('.tbwp_oneclick__period--selected').removeClass('tbwp_oneclick__period--selected');
+        $(this).addClass('tbwp_oneclick__period--selected');
+        $(parent).find('.oneclick_period').val($(this).data('period'));
+        updateSummary(parent);
+    });
+
+    $('.tbwp_oneclick__currency').on('click', function(){
+        parent = $(this).parents('.tbwp_oneclick_form');
+
+        $(parent).find('.oneclick_currency').val($(this).val());
+        $(parent).find('.oneclick_other_amount').trigger('keyup');
+        updateSummary(parent);
+    });
+
+    $('.oneclick_other_amount').on('keyup', function(){
+        parent = $(this).parents('.tbwp_oneclick_form');
+        currency = $(parent).find('.oneclick_currency').val();
+
+        if (currency == 'uf' && $('.oneclick_ufvalue').length) {
+            ufvalue = $('.oneclick_ufvalue').val();
+            amountUF = $(this).val().replace(',', '.');
+            amountCLP = Math.round(ufvalue * amountUF);
+            $(parent).find('.oneclick_amount').val(amountCLP);
+            $(parent).find('.oneclick_amount_uf').val(amountUF);
+        } else {
+            $(parent).find('.oneclick_amount').val($(this).val());
+            $(parent).find('.oneclick_amount_uf').val('');
+        }
+
+        updateSummary(parent);
+    });
+
+    $('.oneclick_other_amount').on('keyup', function(){
+        val = $(this).val().replace(/[^0-9 \,]/, '');    
+        $(this).val(val);
+    });
+
+    $('.oneclick_next').on('click', function(){       
+        parent = $(this).parents('.tbwp_oneclick_form');
+        var isValid = $(parent).valid();
+
+        if ($(parent).find('.oneclick_email')[0].checkValidity()) {
+            $(parent).find('.tbwp_oneclick__step:first-child').hide();
+            $(parent).find('.tbwp_oneclick__step:last-child').show();
+        }
+        updateSummary(parent);
+    });
+
+    $('.oneclick_prev').on('click', function(){
+        parent = $(this).parents('.tbwp_oneclick_form');
+        $(parent).find('.tbwp_oneclick__step:last-child').hide();
+        $(parent).find('.tbwp_oneclick__step:first-child').show(); 
+        updateSummary(parent);
+    });
+
+    $.validator.addMethod('rut', function(value, element){
+        var rut = value;
+        $(element).val(formatRut(value));
+        if (typeof rut !== 'string') {
+            return false;
+        }
+        if (!/^0*(\d{1,3}(\.?\d{3})*)-?([\dkK])$/.test(rut)) {
+            return false;
+        }
+
+        rut = cleanRut(rut);
+
+        var t = parseInt(rut.slice(0, -1), 10);
+        var m = 0;
+        var s = 1;
+
+        while (t > 0) {
+            s = (s + (t % 10) * (9 - m++ % 6)) % 11;
+            t = Math.floor(t / 10);
+        }
+
+        var v = s > 0 ? '' + (s - 1) : 'K';
+
+        return v === rut.slice(-1);
+    }, 'RUT Inválido');
+
+    $('.tbwp_plus_form, .tbwp_oneclick_form').validate({
+        rules: {
+            'tbwp[email]': {
+                required: true,
+                email: true,
+            },
+            'tbwp[firstname]': 'required',
+            'tbwp[lastname]': 'required',
+            'tbwp[phone]': 'required',
+            'tbwp[rut]': {
+                required: true,
+                rut: true,
+            }
+        },
+        messages: {
+            'tbwp[email]': {
+                required: 'Ingrese su email',
+                email: 'Ingrese un email válido'
+            },
+            'tbwp[firstname]': 'Ingrese su nombre',
+            'tbwp[lastname]': 'Ingrese su apellido',
+            'tbwp[phone]': 'Ingrese su teléfono',
+            'tbwp[rut]': {
+                required: 'Ingrese su RUT',
+                rut: 'Ingrese un RUT válido',
+            },
+        }
+    });
+
+    $('.plus_submit').on('click', function(e){
+        e.preventDefault();
+        var isValid = $(this).parents('.tbwp_plus_form').length ? $(this).parents('.tbwp_plus_form').valid() : $(this).parents('.tbwp_oneclick_form').valid();
+        if (isValid) {
+            var form_vars = $(this).parents('form').serialize();
+            $(this).attr('disabled', 'disabled');
+            $.ajax({
+                dataType: "json",
+                type: "post",
+                url: tbAjaxPlus.url,
+                data: "action=" + tbAjaxPlus.action + "&nonce=" + tbAjaxPlus.nonce + "&" + form_vars,
+                success: function(result){
+                    if (result.action && result.token) {
+                        $('#tbwp_token_form').attr('action', result.action);
+                        $('#tbwp_token_ws').val(result.token);
+                        $('#tbwp_token_form').submit();
+                    }
+                }
+            });
+        }
+    });
+
+    $('.oneclick_submit').on('click', function(e){
+        e.preventDefault();
+        
+        parent = $(this).parents('.tbwp_oneclick_form');
+        form_id = $(this).data('form-id');
+
+        var isValid = $(parent).length ? $(parent).valid() : $(parent).valid();
+        if (isValid) {
+            var form_vars = $(this).parents('form').serialize();
+            $(this).attr('disabled', 'disabled');
+
+            if ($(parent).find('.oneclick_type').val() == 'oneclick') {
+                var postUrl = tbAjaxOneClick.url;
+                var postData = "action=" + tbAjaxOneClick.action + "&nonce=" + tbAjaxOneClick.nonce + "&" + form_vars;
+            } else {
+                var postUrl = tbAjaxPlus.url;
+                var postData = "action=" + tbAjaxPlus.action + "&nonce=" + tbAjaxPlus.nonce + "&" + form_vars;
+            }
+
+            $.ajax({
+                dataType: "json",
+                type: "post",
+                url: postUrl, 
+                data: postData,
+                success: function(result){
+                    if (result.action && result.token) {
+                        $('#tbwp_token_form-'+form_id).attr('action', result.action);
+                        $('#tbwp_token_ws-'+form_id).val(result.token);
+                        $('#tbwp_token_form-'+form_id).submit();
+                    }
+                }
+            });
+        }
+    });
+
+    // Query
+    if (urlParam('amount').length) {
+        $('.tbwp_oneclick__option[data-amount="other"]').trigger('click');
+        $('.oneclick_other_amount').val(parseInt(urlParam('amount'))).trigger('keyup');
+    }
+
+    // Functions
+    function updateSummary(parent)
+    {
+        period = $(parent).find('.oneclick_period').val();
+        currency = $(parent).find('.oneclick_currency').val();
+        amountCLP = $(parent).find('.oneclick_amount').val();
+
+        if (currency == 'uf' && $('.oneclick_ufvalue').length) {
+            amountUF = $(parent).find('.oneclick_amount_uf').val().replace('.', ',');
+        }
+
+        if ($('.oneclick_type').val() === 'normal') {
+            period = 'unique';
+        }
+        
+        summary = (period == 'monthly') ? 'Suscripción mensual por ': 'Donación única ';
+
+        const formatter = new Intl.NumberFormat('es-CL', {
+          style: 'currency',
+          currency: 'CLP',
+          minimumFractionDigits: 0
+        });
+
+        if (typeof formatter !== undefined) {
+            amountCLP = formatter.format(amountCLP);
+        }
+
+        if (currency == 'uf') {
+            summary += amountUF + ' UF ('+amountCLP+')';
+        } else {
+            summary += amountCLP;
+        }
+        $(parent).find('.tbwp_oneclick__summary-description').html(summary);
+    }
+
+});
+
+
+function cleanRut(rut) {
+    return typeof rut === 'string'
+    ? rut.replace(/^0+|[^0-9kK]+/g, '').toUpperCase()
+    : '';
+}
+
+function formatRut(rut) {
+    rut = cleanRut(rut);
+
+    var result = rut.slice(-4, -1) + '-' + rut.substr(rut.length - 1);
+    for (var i = 4; i < rut.length; i += 3) {
+        result = rut.slice(-3 - i, -i) + '.' + result;
+    }
+
+    return result
+}
+
+function urlParam(name) {
+    var results = new RegExp('[\?&]' + name + '=([^&#]*)')
+                      .exec(window.location.search);
+
+    return (results !== null) ? results[1] || 0 : false;
+}
